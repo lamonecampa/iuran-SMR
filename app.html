@@ -23,13 +23,13 @@
 <h1>Menghubungkan Portal</h1>
 <p>Anda akan diarahkan ke sistem autentikasi resmi SMR-ONE. Masuk menggunakan akun yang diberikan oleh Super Admin. Hak akses dashboard ditentukan oleh peran akun, bukan oleh parameter alamat halaman.</p>
 <p class="portal-status" id="status">Menghubungkan ke Google Apps Script…</p>
-<a class="button button-primary" id="openPortal" href="https://script.google.com/macros/s/AKfycbyeFS2_r46Gw0NC_K7IVvVJpZwU80rYJepbIQ61TDnM7kbY6CWkuxUVqIiC9rkR7D0E/exec">Buka Portal SMR-ONE ↗</a>
+<a class="button button-primary" id="openPortal" href="https://script.google.com/macros/s/AKfycbxfcRFUG4WSgt0ZNI6o5nx92WbJdYeG1RRl6zIQ6ynzgEYpn2sJwKhv9l2A-e2VY3H1/exec">Buka Portal SMR-ONE ↗</a>
 <a class="back" href="index.html">Kembali ke Homepage</a>
 </section>
 </main>
 <script>
 (function(){
-  var target="https://script.google.com/macros/s/AKfycbyeFS2_r46Gw0NC_K7IVvVJpZwU80rYJepbIQ61TDnM7kbY6CWkuxUVqIiC9rkR7D0E/exec";
+  var target="https://script.google.com/macros/s/AKfycbxfcRFUG4WSgt0ZNI6o5nx92WbJdYeG1RRl6zIQ6ynzgEYpn2sJwKhv9l2A-e2VY3H1/exec";
   var status=document.getElementById('status');
   document.getElementById('openPortal').href=target;
   var timer=setTimeout(function(){status.textContent='Jika pengalihan tidak berjalan otomatis, gunakan tombol Buka Portal SMR-ONE.';},1800);
