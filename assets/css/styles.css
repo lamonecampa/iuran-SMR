@@ -143,3 +143,51 @@ button,a,input,select,textarea{touch-action:manipulation}
  .preview-card,.float-note,.pulse,.live-dot{animation:none!important}
  .reveal{opacity:1;transform:none}
 }
+
+
+/* SMR-ONE map background: explicit image and overlay layers */
+.hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#101b2d !important;
+  background-image:none !important;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:url("../images/smr-one-residence.webp?v=20261125");
+  background-size:cover;
+  background-position:center 48%;
+  background-repeat:no-repeat;
+  opacity:.78;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(8,20,34,.82) 0%,rgba(8,20,34,.67) 42%,rgba(8,20,34,.40) 72%,rgba(8,20,34,.30) 100%);
+}
+.hero-copy,.hero-visual,.hero-scroll{
+  position:relative;
+  z-index:1;
+}
+.hero h1{color:#fff}
+.hero-lead{color:#e0e8ef}
+.hero-proof,.hero-scroll{color:#e0e8ef}
+.hero-visual .orbit{border-color:rgba(230,255,241,.38)}
+.hero-visual .visual-label{color:#e5edf2}
+.hero-visual .visual-glow{background:#8ce0ba;opacity:.15}
+@media(max-width:800px){
+  .hero::before{background-position:57% center;opacity:.72}
+  .hero::after{background:linear-gradient(180deg,rgba(8,20,34,.78),rgba(8,20,34,.62) 48%,rgba(8,20,34,.72))}
+}
+@media(max-width:480px){
+  .hero::before{background-position:54% center;opacity:.68}
+}
+
