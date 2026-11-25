@@ -126,7 +126,7 @@ function adminListResidents(token) {
 }
 
 function getMyProfile(token) {
-  const s=requireRole_(token,['SUPER_ADMIN','WARGA']);
+  const s=requireRole_(token,['SUPER_ADMIN','WARGA'],true);
   const u=rows_(db_().getSheetByName(CFG.USERS)).find(r=>r.user_id===s.user_id);
   if(!u) throw new Error('Akun tidak ditemukan.');
   if(s.role==='SUPER_ADMIN') return {username:u.username,role:u.role,phone:u.phone||'',nama:'Administrator SMR-ONE'};
@@ -153,7 +153,7 @@ function updateMyPhone(token, newPhone) {
 }
 
 function changeMyPassword(token, oldPassword, newPassword) {
-  const s=requireRole_(token,['SUPER_ADMIN','WARGA']);
+  const s=requireRole_(token,['SUPER_ADMIN','WARGA'],true);
   validatePassword_(newPassword);
   const sh=db_().getSheetByName(CFG.USERS), found=findRow_(sh,'user_id',s.user_id);
   if(!found) throw new Error('Akun tidak ditemukan.');
@@ -184,10 +184,14 @@ function session_(token) {
   if(!raw) return null;
   try { return JSON.parse(raw); } catch(e) { return null; }
 }
-function requireRole_(token, roles) {
+function requireRole_(token, roles, allowPasswordChange) {
   const s=session_(token);
   if(!s) throw new Error('Sesi berakhir. Silakan login kembali.');
   if(!roles.includes(s.role)) throw new Error('Anda tidak memiliki hak akses untuk tindakan ini.');
+  const u=rows_(db_().getSheetByName(CFG.USERS)).find(r=>r.user_id===s.user_id);
+  if(!u || u.status!=='ACTIVE') throw new Error('Akun tidak aktif. Hubungi Super Admin.');
+  const mustChange=u.must_change_password===true || String(u.must_change_password)==='TRUE';
+  if(mustChange && !allowPasswordChange) throw new Error('Demi keamanan, ganti password sementara terlebih dahulu sebelum menggunakan fitur lain.');
   return s;
 }
 function db_() {
