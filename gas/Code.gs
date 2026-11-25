@@ -20,10 +20,11 @@ function doGet() {
 
 /** Run once from the Apps Script editor after binding this project to a private spreadsheet. */
 function initializeSmrDatabase() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  if (!ss) throw new Error('Buka Apps Script dari Extensions > Apps Script pada Google Spreadsheet.');
+  // SMR-ONE_DATABASE target spreadsheet
+  const spreadsheetId = '1rRt8rFDolA4V3q-1OB0aq0MkqKVjWDrVsZs3VS1iSUI';
+  const ss = SpreadsheetApp.openById(spreadsheetId);
   const props = PropertiesService.getScriptProperties();
-  props.setProperty('SMR_SPREADSHEET_ID', ss.getId());
+  props.setProperty('SMR_SPREADSHEET_ID', spreadsheetId);
   ensureSheet_(ss, CFG.USERS, ['user_id','username','role','resident_id','password_salt','password_hash','phone','status','created_at','updated_at','must_change_password']);
   ensureSheet_(ss, CFG.RESIDENTS, ['resident_id','kavling','nama','phone','status','created_at','updated_at']);
   ensureSheet_(ss, CFG.AUDIT, ['event_id','actor_user_id','action','target_id','details','created_at']);
