@@ -1,1 +1,41 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101b2d"><title>Portal SMR-ONE</title><link rel="stylesheet" href="assets/css/styles.css"><style>.portal{min-height:100svh;display:grid;place-items:center;padding:30px}.portal-card{width:min(520px,100%);background:white;border:1px solid #e8edf1;border-radius:16px;padding:clamp(22px,5vw,36px);box-shadow:0 20px 60px #152b3c12}.portal-card h1{font:700 clamp(25px,6vw,30px) Manrope;color:#101b2d;margin:25px 0 10px}.portal-card p{font-size:13px;line-height:1.8;color:#718096}.portal-card input{width:100%;padding:14px;border:1px solid #dce4e9;border-radius:8px;font:inherit;min-height:48px}.portal-card a.button{width:100%;margin:12px 0}.notice{font-size:11px!important;color:#805b1a!important;background:#fff7e6;border-radius:8px;padding:12px}.back{font-size:11px;color:#16865e;font-weight:700}</style></head><body><main class="portal"><section class="portal-card"><a class="brand" href="index.html"><span class="brand-mark"><span></span><span></span><span></span></span><span><strong>SMR-ONE</strong><small>SEMPU MULIA RESIDENCE</small></span></a><h1>Portal SMR-ONE</h1><p>Autentikasi dan pengelolaan akun dijalankan melalui Google Apps Script agar password tidak dikirim ke endpoint publik lintas-domain.</p><p class="notice">Portal backend belum dapat diakses dari halaman GitHub Pages sebelum URL deployment Apps Script dipasang. Setelah deploy, gunakan URL Web App sebagai alamat login resmi warga dan Super Admin.</p><a class="button button-primary" href="index.html">Kembali ke Homepage</a><a class="back" href="https://github.com/lamonecampa/iuran-SMR">Repository GitHub ↗</a></section></main></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101b2d">
+<title>SMR-ONE | Menghubungkan Portal</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+.portal{min-height:100svh;display:grid;place-items:center;padding:24px}
+.portal-card{width:min(520px,100%);background:#fff;border:1px solid #e8edf1;border-radius:18px;padding:clamp(24px,5vw,38px);box-shadow:0 20px 60px #152b3c12}
+.portal-card h1{font:800 clamp(25px,6vw,32px) Manrope,Arial,sans-serif;color:#101b2d;margin:25px 0 10px}
+.portal-card p{font-size:13px;line-height:1.8;color:#718096}
+.portal-card .button{width:100%;margin:12px 0}
+.portal-status{font-size:12px;color:#176342;background:#eef8f2;border-radius:9px;padding:12px}
+.back{font-size:11px;color:#16865e;font-weight:700}
+</style>
+</head>
+<body>
+<main class="portal">
+<section class="portal-card">
+<a class="brand" href="index.html"><span class="brand-mark"><span></span><span></span><span></span></span><span><strong>SMR-ONE</strong><small>SEMPU MULIA RESIDENCE</small></span></a>
+<h1>Menghubungkan Portal</h1>
+<p>Anda akan diarahkan ke sistem autentikasi resmi SMR-ONE. Masuk menggunakan akun yang diberikan oleh Super Admin. Hak akses dashboard ditentukan oleh peran akun, bukan oleh parameter alamat halaman.</p>
+<p class="portal-status" id="status">Menghubungkan ke Google Apps Script…</p>
+<a class="button button-primary" id="openPortal" href="https://script.google.com/macros/s/AKfycbyeFS2_r46Gw0NC_K7IVvVJpZwU80rYJepbIQ61TDnM7kbY6CWkuxUVqIiC9rkR7D0E/exec">Buka Portal SMR-ONE ↗</a>
+<a class="back" href="index.html">Kembali ke Homepage</a>
+</section>
+</main>
+<script>
+(function(){
+  var target="https://script.google.com/macros/s/AKfycbyeFS2_r46Gw0NC_K7IVvVJpZwU80rYJepbIQ61TDnM7kbY6CWkuxUVqIiC9rkR7D0E/exec";
+  var status=document.getElementById('status');
+  document.getElementById('openPortal').href=target;
+  var timer=setTimeout(function(){status.textContent='Jika pengalihan tidak berjalan otomatis, gunakan tombol Buka Portal SMR-ONE.';},1800);
+  window.location.replace(target);
+  window.addEventListener('pagehide',function(){clearTimeout(timer);});
+})();
+</script>
+</body>
+</html>
