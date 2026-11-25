@@ -54,3 +54,7 @@ Jalankan `python -m http.server 8000` lalu buka `http://localhost:8000`.
 4. CRUD warga, kategori, tagihan, pembayaran.
 5. Dashboard dari data nyata.
 6. Integrasi WhatsApp dan log pengiriman.
+
+
+## Homepage background
+Foto satelit kawasan Sempu Mulia Residence disimpan lokal di `assets/images/smr-one-residence.webp` dan digunakan sebagai background hero dengan gradient overlay agar teks tetap terbaca. Tidak bergantung pada URL gambar eksternal.
