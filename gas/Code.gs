@@ -122,8 +122,55 @@ function adminListResidents(token) {
   const ss=db_(), rr=rows_(ss.getSheetByName(CFG.RESIDENTS)), ur=rows_(ss.getSheetByName(CFG.USERS));
   return rr.map(r=>{
     const u=ur.find(x=>x.resident_id===r.resident_id);
-    return {resident_id:r.resident_id,kavling:r.kavling,nama:r.nama,phone:r.phone,status:r.status,username:u?u.username:'(belum ada akun)'};
+    return {resident_id:r.resident_id,kavling:r.kavling,nama:r.nama,phone:r.phone,status:r.status,account_status:u?u.status:'NO_ACCOUNT',username:u?u.username:'(belum ada akun)'};
   }).sort((a,b)=>String(a.kavling).localeCompare(String(b.kavling),undefined,{numeric:true}));
+}
+
+
+/** Admin-only: update resident identity and the linked login username. */
+function adminUpdateResident(token, residentId, input) {
+  const actor = requireRole_(token, ['SUPER_ADMIN']);
+  input = input || {};
+  const kavling = normalizeKavling_(input.kavling);
+  const nama = String(input.nama || '').trim();
+  const phone = normalizePhone_(input.phone);
+  const username = String(input.username || '').trim().toLowerCase();
+  if (!kavling || !nama || !phone) throw new Error('Kavling, nama, dan nomor WhatsApp wajib diisi.');
+  if (!/^[a-z0-9._-]{4,32}$/.test(username)) throw new Error('Username harus 4-32 karakter dan hanya berisi huruf kecil, angka, titik, _ atau -.');
+  const lock = LockService.getScriptLock(); lock.waitLock(30000);
+  try {
+    const ss = db_(), residents = ss.getSheetByName(CFG.RESIDENTS), users = ss.getSheetByName(CFG.USERS);
+    const r = findRow_(residents, 'resident_id', residentId);
+    const u = findRow_(users, 'resident_id', residentId);
+    if (!r || !u || u.data.role !== 'WARGA') throw new Error('Data akun warga tidak ditemukan.');
+    const rr = rows_(residents), ur = rows_(users);
+    if (rr.some(x => x.resident_id !== residentId && String(x.kavling).toUpperCase() === kavling)) throw new Error('Nomor kavling sudah digunakan warga lain.');
+    if (ur.some(x => x.user_id !== u.data.user_id && x.username === username)) throw new Error('Username sudah digunakan akun lain.');
+    const now = new Date();
+    residents.getRange(r.row, 2, 1, 3).setValues([[kavling, nama, phone]]);
+    residents.getRange(r.row, 7).setValue(now);
+    users.getRange(u.row, 2).setValue(username);
+    users.getRange(u.row, 7).setValue(phone);
+    users.getRange(u.row, 10).setValue(now);
+    audit_(actor.user_id, 'UPDATE_RESIDENT_ACCOUNT', residentId, 'Kavling '+kavling+'; username '+username);
+    return {ok:true, message:'Data warga dan username berhasil diperbarui.'};
+  } finally { lock.releaseLock(); }
+}
+
+/** Admin-only: reset a resident password without revealing the previous password. */
+function adminResetResidentPassword(token, residentId, newPassword) {
+  const actor = requireRole_(token, ['SUPER_ADMIN']);
+  validatePassword_(newPassword);
+  const sh = db_().getSheetByName(CFG.USERS);
+  const u = findRow_(sh, 'resident_id', residentId);
+  if (!u || u.data.role !== 'WARGA') throw new Error('Akun warga tidak ditemukan.');
+  const salt = Utilities.getUuid().replace(/-/g,'');
+  sh.getRange(u.row, 5).setValue(salt);
+  sh.getRange(u.row, 6).setValue(passwordHash_(newPassword, salt));
+  sh.getRange(u.row, 10).setValue(new Date());
+  sh.getRange(u.row, 11).setValue(true);
+  audit_(actor.user_id, 'RESET_RESIDENT_PASSWORD', residentId, 'Password direset oleh Super Admin; wajib ganti saat login');
+  return {ok:true, message:'Password berhasil direset. Warga wajib menggantinya saat login berikutnya.'};
 }
 
 function getMyProfile(token) {
